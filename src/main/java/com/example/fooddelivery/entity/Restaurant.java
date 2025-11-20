@@ -49,9 +49,6 @@ public class Restaurant {
     @Column(name = "closing_time", nullable = false)
     private LocalTime closingTime;
 
-    @Transient
-    private Boolean isOpen;
-
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -62,6 +59,9 @@ public class Restaurant {
 
     @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Item> menu = new ArrayList<>();
+
+    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
+    private List<Cart> carts = new ArrayList<>();
 
     public Restaurant(String name, Address address, CuisineType cuisineType, LocalTime openingTime, LocalTime closingTime) {
         this.name = name;

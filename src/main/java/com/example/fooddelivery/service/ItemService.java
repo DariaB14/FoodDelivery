@@ -31,8 +31,6 @@ public class ItemService {
         Item item = itemMapper.toEntity(request);
         item.setRestaurant(restaurant);
 
-//        calculateMinValues(item, request.getOptions());
-
         if (request.getOptions() != null && !request.getOptions().isEmpty()) {
             List<ItemOption> options = itemMapper.toOptionEntities(request.getOptions());
             options.forEach(option -> option.setItem(item));
@@ -69,8 +67,6 @@ public class ItemService {
                 newOptions.forEach(option -> option.setItem(item));
                 item.getOptions().addAll(newOptions);
             }
-
-//            calculateMinValues(item, request.getOptions());
         }
 
         Item updated = itemRepository.save(item);
@@ -91,25 +87,4 @@ public class ItemService {
         Item updated = itemRepository.save(item);
         return itemMapper.toDto(updated);
     }
-
-//    private void calculateMinValues(Item item, List<ItemOptionRequest> options) {
-//        if (options == null || options.isEmpty()) {
-//            item.setMinPrice(BigDecimal.ZERO);
-//            item.setMinPreparationMinutes(0);
-//            return;
-//        }
-//
-//        BigDecimal minPrice = options.stream()
-//                .map(ItemOptionRequest::getPrice)
-//                .min(BigDecimal::compareTo)
-//                .orElse(BigDecimal.ZERO);
-//
-//        Integer minPrepTime = options.stream()
-//                .map(ItemOptionRequest::getPreparationMinutes)
-//                .min(Integer::compareTo)
-//                .orElse(0);
-//
-//        item.setMinPrice(minPrice);
-//        item.setMinPreparationMinutes(minPrepTime);
-
 }

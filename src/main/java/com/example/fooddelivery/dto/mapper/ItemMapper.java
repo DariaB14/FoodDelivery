@@ -17,6 +17,7 @@ public interface ItemMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "restaurant", ignore = true)
     @Mapping(target = "options", ignore = true)
+    @Mapping(target = "cartItems", ignore = true)
     Item toEntity(ItemRequest dto);
 
     @Mapping(target = "restaurantId", source = "restaurant.id")

@@ -12,6 +12,6 @@ public record RestaurantResponse(
         CuisineType cuisineType,
         Double rating,
         LocalTime openingTime,
-        LocalTime closingTime,
-        Boolean isOpen
+        LocalTime closingTime
 ) {}
+

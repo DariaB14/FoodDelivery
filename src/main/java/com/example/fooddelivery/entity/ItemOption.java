@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "item_options")
@@ -33,4 +35,7 @@ public class ItemOption {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id", nullable = false)
     private Item item;
+
+    @OneToMany(mappedBy = "itemOption", fetch = FetchType.LAZY)
+    private List<CartItem> cartItems = new ArrayList<>();
 }

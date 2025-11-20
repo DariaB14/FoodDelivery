@@ -1,6 +1,5 @@
 package com.example.fooddelivery.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemRequest {
-    @NotBlank String name;
-    boolean available = true;
-    List<ItemOptionRequest> options = new ArrayList<>();
+public class CartRequest {
+    Long restaurantId;
+    List<CartItemRequest> items = new ArrayList<>();
 }

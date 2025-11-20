@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/menu")
+@RequestMapping("/menu")
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;

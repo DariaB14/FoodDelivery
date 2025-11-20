@@ -15,8 +15,8 @@ public interface RestaurantMapper {
     @Mapping(target = "rating", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "isOpen", ignore = true)
     @Mapping(target = "menu", ignore = true)
+    @Mapping(target = "carts", ignore = true)
     Restaurant toEntity(RestaurantRequest dto);
 
     RestaurantResponse toDto(Restaurant restaurant);
@@ -25,8 +25,8 @@ public interface RestaurantMapper {
     @Mapping(target = "rating", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "isOpen", ignore = true)
     @Mapping(target = "menu", ignore = true)
+    @Mapping(target = "carts", ignore = true)
     void update(RestaurantRequest dto, @MappingTarget Restaurant restaurant);
 
     Address toAddressEntity(AddressDto dto);

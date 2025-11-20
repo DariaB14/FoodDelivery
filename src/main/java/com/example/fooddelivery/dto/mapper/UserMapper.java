@@ -15,6 +15,7 @@ public interface UserMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "active", constant = "true")
+    @Mapping(target = "cart", ignore = true)
     User toEntity(UserRequest dto);
 
     UserResponse toDto(User user);
@@ -24,6 +25,7 @@ public interface UserMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "active", ignore = true)
+    @Mapping(target = "cart", ignore = true)
     void update(UserRequest dto, @MappingTarget User user);
 
     Address toAddressEntity(AddressDto dto);

@@ -58,6 +58,9 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Cart cart;
+
     public User(String username, String email, String password, String phone, UserRole role, boolean active) {
         this.username = username;
         this.email = email;

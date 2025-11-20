@@ -25,19 +25,15 @@ public class Item {
     @Column(nullable = false)
     private String name;
 
-    @DecimalMin("0.0")
-    @Column(name="min_price")
-    private BigDecimal minPrice;
-
-    @Column(name="min_preparation_minutes")
-    private Integer minPreparationMinutes;
-
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemOption> options = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
+
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
+    private List<CartItem> cartItems = new ArrayList<>();
 
     @Column(nullable = false)
     private boolean available = true;
