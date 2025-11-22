@@ -9,10 +9,10 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ReviewMapper {
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "user", ignore = true) // установим в сервисе через order
-    @Mapping(target = "restaurant", ignore = true) // установим в сервисе через order
-    @Mapping(target = "order", ignore = true) // установим в сервисе по orderId
-    @Mapping(target = "status", constant = "PENDING") // всегда PENDING при создании
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "restaurant", ignore = true)
+    @Mapping(target = "order", ignore = true)
+    @Mapping(target = "status", constant = "PENDING")
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     Review toEntity(ReviewRequest dto);

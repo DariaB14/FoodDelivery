@@ -28,9 +28,5 @@ public interface ItemMapper {
     @Mapping(target = "options", ignore = true)
     void update(ItemRequest dto, @MappingTarget Item item);
 
-    ItemOption toOptionEntity(ItemOptionRequest dto);
-    ItemOptionResponse toOptionDto(ItemOption option);
-
     List<ItemOption> toOptionEntities(List<ItemOptionRequest> dtos);
-    List<ItemOptionResponse> toOptionDtos(List<ItemOption> options);
 }

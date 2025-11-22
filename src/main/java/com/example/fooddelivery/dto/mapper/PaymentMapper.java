@@ -9,8 +9,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface PaymentMapper {
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "order", ignore = true) // установим в сервисе по orderId
-    @Mapping(target = "paymentStatus", constant = "PENDING") // всегда PENDING при создании
+    @Mapping(target = "order", ignore = true)
+    @Mapping(target = "paymentStatus", constant = "PENDING")
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     Payment toEntity(PaymentRequest dto);

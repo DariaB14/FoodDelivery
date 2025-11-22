@@ -3,7 +3,6 @@ package com.example.fooddelivery.service;
 import com.example.fooddelivery.dto.request.ReviewRequest;
 import com.example.fooddelivery.entity.Review;
 import com.example.fooddelivery.enums.ReviewStatus;
-import com.example.fooddelivery.exception.exceptions.ReviewException;
 import com.example.fooddelivery.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

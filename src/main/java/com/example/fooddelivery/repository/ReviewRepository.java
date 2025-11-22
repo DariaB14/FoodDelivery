@@ -13,9 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    Optional<Review> findByOrderId(Long orderId);
     List<Review> findAllByUserId(Long userId);
-    List<Review> findAllByRestaurantId(Long restaurantId);
 
     @Query("select r from Review r where r.restaurant.id = :restaurantId order by r.createdAt desc limit 50")
     List<Review> findLast50ReviewsByRestaurantId(@Param("restaurantId") Long restaurantId);

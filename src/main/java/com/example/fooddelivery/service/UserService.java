@@ -3,11 +3,10 @@ package com.example.fooddelivery.service;
 import com.example.fooddelivery.dto.mapper.UserMapper;
 import com.example.fooddelivery.dto.request.UserRequest;
 import com.example.fooddelivery.dto.response.UserResponse;
-import com.example.fooddelivery.entity.Review;
 import com.example.fooddelivery.entity.User;
 import com.example.fooddelivery.enums.UserRole;
-import com.example.fooddelivery.exception.exceptions.EmailException;
-import com.example.fooddelivery.exception.exceptions.EntityNotFoundException;
+import com.example.fooddelivery.exception.EmailException;
+import com.example.fooddelivery.exception.EntityNotFoundException;
 import com.example.fooddelivery.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,7 +37,7 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("User with id %d not found", id)));
         if (!user.isActive()){
-            throw new EntityNotFoundException(String.format("User with if %d is deactivated", id));
+            throw new EntityNotFoundException(String.format("User with id %d is deactivated", id));
         }
         return userMapper.toDto(user);
     }

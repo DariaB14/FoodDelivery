@@ -9,8 +9,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface NotificationMapper {
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "user", ignore = true) // установим в сервисе по userId
-    @Mapping(target = "status", constant = "PENDING") // всегда PENDING при создании
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "status", constant = "PENDING")
     @Mapping(target = "sentAt", ignore = true)
     Notification toEntity(NotificationRequest dto);
 

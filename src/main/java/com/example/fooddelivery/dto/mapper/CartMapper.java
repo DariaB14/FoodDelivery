@@ -26,17 +26,4 @@ public interface CartMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     Cart toEntity(CartRequest dto);
-
-    @Mapping(target = "itemId", source = "item.id")
-    @Mapping(target = "itemOptionId", source = "itemOption.id")
-    CartItemResponse toCartItemDto(CartItem cartItem);
-
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "cart", ignore = true)
-    @Mapping(target = "item", ignore = true)
-    @Mapping(target = "itemOption", ignore = true)
-    CartItem toCartItemEntity(CartItemRequest dto);
-
-    List<CartItemResponse> toCartItemDtos(List<CartItem> cartItems);
-    List<CartItem> toCartItemEntities(List<CartItemRequest> dtos);
 }

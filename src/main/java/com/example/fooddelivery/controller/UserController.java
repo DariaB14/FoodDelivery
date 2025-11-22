@@ -26,7 +26,6 @@ public class UserController {
     public ResponseEntity<UserResponse> register(@RequestBody @Valid UserRequest userRequest){
         UserResponse response = userService.register(userRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
-
     }
 
     @Operation(summary = "Поиск пользователя по id")

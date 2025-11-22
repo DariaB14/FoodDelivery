@@ -9,8 +9,8 @@ import com.example.fooddelivery.entity.Courier;
 import com.example.fooddelivery.entity.Order;
 import com.example.fooddelivery.enums.CourierStatus;
 import com.example.fooddelivery.enums.OrderStatus;
-import com.example.fooddelivery.exception.exceptions.BusinessException;
-import com.example.fooddelivery.exception.exceptions.EntityNotFoundException;
+import com.example.fooddelivery.exception.BusinessException;
+import com.example.fooddelivery.exception.EntityNotFoundException;
 import com.example.fooddelivery.repository.CourierRepository;
 import com.example.fooddelivery.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -100,11 +100,6 @@ public class CourierService {
         Courier courier = courierRepository.findById(courierId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format("Courier with id %d not found", courierId)));
-
-        // Дополнительные проверки при смене статуса
-        if (status == CourierStatus.OFFLINE && courier.getCurrentOrdersAmount() > 0) {
-            throw new BusinessException("Cannot go offline with active orders");
-        }
 
         courier.setStatus(status);
         Courier updatedCourier = courierRepository.save(courier);

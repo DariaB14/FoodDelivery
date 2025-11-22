@@ -8,9 +8,10 @@ import com.example.fooddelivery.entity.*;
 import com.example.fooddelivery.enums.NotificationChannel;
 import com.example.fooddelivery.enums.NotificationType;
 import com.example.fooddelivery.enums.OrderStatus;
-import com.example.fooddelivery.exception.exceptions.BusinessException;
-import com.example.fooddelivery.exception.exceptions.EntityNotFoundException;
-import com.example.fooddelivery.exception.exceptions.StatusException;
+import com.example.fooddelivery.exception.AccessDeniedException;
+import com.example.fooddelivery.exception.BusinessException;
+import com.example.fooddelivery.exception.EntityNotFoundException;
+import com.example.fooddelivery.exception.StatusException;
 import com.example.fooddelivery.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -161,10 +162,10 @@ public class OrderService {
 
         if (courierId != null) {
             if (order.getCourier() == null) {
-                throw new SecurityException("Order is not assigned to any courier");
+                throw new AccessDeniedException("Order is not assigned to any courier");
             }
             if (!order.getCourier().getId().equals(courierId)) {
-                throw new SecurityException("This order belongs to another courier");
+                throw new AccessDeniedException("This order belongs to another courier");
             }
         }
     }

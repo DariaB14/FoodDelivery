@@ -4,6 +4,8 @@ import com.example.fooddelivery.dto.request.OrderRequest;
 import com.example.fooddelivery.dto.response.OrderResponse;
 import com.example.fooddelivery.enums.OrderStatus;
 import com.example.fooddelivery.service.OrderService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -17,20 +19,24 @@ import java.util.List;
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
+@Tag(name = "Order Service")
 public class OrderController {
     private final OrderService orderService;
 
+    @Operation(summary = "Создать заказ на основе корзины")
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody OrderRequest orderRequest) {
         OrderResponse response = orderService.createOrder(orderRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @Operation(summary = "Найти заказ")
     @GetMapping("/{id}")
     public ResponseEntity<OrderResponse> getOrder(@PathVariable Long id) {
         return ResponseEntity.ok(orderService.getOrderById(id));
     }
 
+    @Operation(summary = "Найти заказы по id пользователя и статусу")
     @GetMapping
     public ResponseEntity<List<OrderResponse>> getOrders(@RequestParam(required = false) Long userId,
                                                          @RequestParam(required = false) OrderStatus status){
@@ -45,6 +51,7 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Обновить статус заказа")
     @PatchMapping("/{id}/status")
     public ResponseEntity<OrderResponse> updateStatus(@PathVariable Long id,
                                                       @RequestParam @NotNull OrderStatus status,
@@ -56,6 +63,7 @@ public class OrderController {
         }
     }
 
+    @Operation(summary = "Отменить заказ")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> cancelOrder(@PathVariable Long id){
         orderService.cancelOrder(id);

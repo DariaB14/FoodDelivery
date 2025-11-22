@@ -6,7 +6,7 @@ import com.example.fooddelivery.dto.response.ItemResponse;
 import com.example.fooddelivery.entity.Item;
 import com.example.fooddelivery.entity.ItemOption;
 import com.example.fooddelivery.entity.Restaurant;
-import com.example.fooddelivery.exception.exceptions.EntityNotFoundException;
+import com.example.fooddelivery.exception.EntityNotFoundException;
 import com.example.fooddelivery.repository.ItemRepository;
 import com.example.fooddelivery.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;

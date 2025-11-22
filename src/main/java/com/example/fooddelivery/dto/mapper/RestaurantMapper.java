@@ -1,9 +1,7 @@
 package com.example.fooddelivery.dto.mapper;
 
-import com.example.fooddelivery.dto.AddressDto;
 import com.example.fooddelivery.dto.request.RestaurantRequest;
 import com.example.fooddelivery.dto.response.RestaurantResponse;
-import com.example.fooddelivery.entity.Address;
 import com.example.fooddelivery.entity.Restaurant;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -31,7 +29,4 @@ public interface RestaurantMapper {
     @Mapping(target = "carts", ignore = true)
     @Mapping(target = "reviews", ignore = true)
     void update(RestaurantRequest dto, @MappingTarget Restaurant restaurant);
-
-    Address toAddressEntity(AddressDto dto);
-    AddressDto toAddressDto(Address address);
 }

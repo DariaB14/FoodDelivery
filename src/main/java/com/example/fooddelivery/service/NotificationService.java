@@ -6,7 +6,7 @@ import com.example.fooddelivery.dto.response.NotificationResponse;
 import com.example.fooddelivery.entity.Notification;
 import com.example.fooddelivery.entity.User;
 import com.example.fooddelivery.enums.NotificationStatus;
-import com.example.fooddelivery.exception.exceptions.EntityNotFoundException;
+import com.example.fooddelivery.exception.EntityNotFoundException;
 import com.example.fooddelivery.inner.NotificationSender;
 import com.example.fooddelivery.repository.NotificationRepository;
 import com.example.fooddelivery.repository.UserRepository;
