@@ -11,7 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Service
 @Transactional
@@ -21,9 +24,9 @@ public class CartService {
     private final CartItemRepository cartItemRepository;
     private final ItemOptionRepository itemOptionRepository;
     private final CartMapper cartMapper;
+    private final CourierRepository courierRepository;
 
-    public CartResponse addItem(CartItemRequest request) {
-        Long userId = getAuthenticatedOwnerId();
+    public CartResponse addItem(Long userId, CartItemRequest request) {
         Cart cart = getCartOrCreate(userId);
 
         ItemOption itemOption = itemOptionRepository.findById(request.getItemOptionId())
@@ -55,6 +58,12 @@ public class CartService {
         if (!itemOption.getItem().isAvailable()) {
             throw new BusinessException("Item is not available now");
         }
+
+        Restaurant restaurant = itemOption.getItem().getRestaurant();
+        if (!restaurant.isActive()) {
+            throw new BusinessException("Restaurant is closed");
+        }
+
         if (!isRestaurantOpen(itemOption.getItem().getRestaurant())) {
             throw new BusinessException("Restaurant is closed");
         }
@@ -66,7 +75,7 @@ public class CartService {
         }
     }
 
-    public void deleteItem(Long itemId) {
+    public void deleteItem(Long userId, Long itemId) {
         CartItem cartItem = cartItemRepository.findById(itemId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Cart item with id %d not found", itemId)));
 
@@ -79,19 +88,18 @@ public class CartService {
         }
     }
 
-    public CartResponse updateQuantity(Long itemId, Integer quantity) {
+    public CartResponse updateQuantity(Long userId, Long itemId, Integer quantity) {
         CartItem cartItem = cartItemRepository.findById(itemId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Cart item with id %d not found", itemId)));
 
         cartItem.setQuantity(quantity);
         cartItemRepository.save(cartItem);
 
-        return getCart();
+        return getCart(userId);
     }
 
     @Transactional(readOnly = true)
-    public CartResponse getCart() {
-        Long userId = getAuthenticatedOwnerId();
+    public CartResponse getCart(Long userId) {
 
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Cart for user with id %d not found", userId)));
@@ -99,20 +107,13 @@ public class CartService {
         return addEtaToResponse(cartMapper.toDto(cart), cart);
     }
 
-    public void clearCart() {
-        Long userId = getAuthenticatedOwnerId();
+    public void clearCart(Long userId) {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Cart for user with id %d not found", userId)));
 
         cart.getItems().clear();
         cart.setRestaurant(null);
         cartRepository.save(cart);
-    }
-
-    // На данный момент возвращаем заглушку, при подключении Spring Security будем проверять через
-    // SecurityContextHolder.getContext().getAuthentication()
-    private Long getAuthenticatedOwnerId(){
-        return 1L;
     }
 
     private Cart getCartOrCreate(Long userId){
@@ -143,6 +144,57 @@ public class CartService {
     }
 
     private Integer calculateEta(Cart cart){
-        return null;
+        if(cart.getRestaurant()==null || cart.getItems().isEmpty()){
+            return null;
+        }
+
+        Integer preparationTime = calculatePrepTime(cart);
+        Integer deliveryTime = calculateDeliveryTime();
+        return preparationTime+deliveryTime;
+    }
+
+    private Integer calculatePrepTime(Cart cart) {
+        return cart.getItems().stream()
+                .mapToInt(item -> item.getItemOption().getPreparationMinutes())
+                .max()
+                .orElse(0);
+    }
+
+    private Integer calculateDeliveryTime() {
+        Integer baseDeliveryTime = 30;
+        if (isEvening()) baseDeliveryTime += 5;
+        if (isWeekend()) baseDeliveryTime += 10;
+        baseDeliveryTime += getCourierLoad();
+        return baseDeliveryTime;
+    }
+
+    private boolean isEvening() {
+        LocalTime now = LocalTime.now();
+        LocalTime eveningStart = LocalTime.of(18, 0);
+        LocalTime eveningEnd = LocalTime.of(22, 0);
+
+        return !now.isBefore(eveningStart) && now.isBefore(eveningEnd);
+    }
+
+    private boolean isWeekend() {
+        DayOfWeek today = LocalDate.now().getDayOfWeek();
+        return today == DayOfWeek.SATURDAY || today == DayOfWeek.SUNDAY;
+    }
+
+    private Integer getCourierLoad() {
+        List<Courier> allCouriers = courierRepository.findAll();
+        long busyCouriers = allCouriers.stream()
+                .filter(courier -> courier.getCurrentOrdersAmount() > 0)
+                .count();
+
+        if (allCouriers.isEmpty()) {
+            return 0;
+        }
+
+        double load = (double) busyCouriers / allCouriers.size();
+
+        if (load > 0.8) return 15;
+        else if (load > 0.5) return 10;
+        else return 0;
     }
 }

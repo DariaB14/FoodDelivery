@@ -1,5 +1,6 @@
 package com.example.fooddelivery.dto.request;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,5 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 public class CartRequest {
     Long restaurantId;
+    @Valid
     List<CartItemRequest> items = new ArrayList<>();
 }

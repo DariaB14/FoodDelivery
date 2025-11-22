@@ -7,10 +7,12 @@ import com.example.fooddelivery.entity.Restaurant;
 import com.example.fooddelivery.enums.CuisineType;
 import com.example.fooddelivery.exception.exceptions.EntityNotFoundException;
 import com.example.fooddelivery.repository.RestaurantRepository;
+import com.example.fooddelivery.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,10 +22,12 @@ import java.util.stream.Collectors;
 public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final RestaurantMapper restaurantMapper;
+    private final ReviewRepository reviewRepository;
 
     public RestaurantResponse createRestaurant(RestaurantRequest request) {
         Restaurant restaurant = restaurantMapper.toEntity(request);
-        restaurant.setRating(0.0);
+        restaurant.setRating(BigDecimal.ZERO);
+        restaurant.setActive(true);
         Restaurant saved = restaurantRepository.save(restaurant);
         return restaurantMapper.toDto(saved);
     }
@@ -31,8 +35,13 @@ public class RestaurantService {
     @Transactional(readOnly = true)
     public List<RestaurantResponse> getRestaurants(CuisineType cuisine, Double minRating) {
         List<Restaurant> restaurants = restaurantRepository.findByCuisineAndRating(cuisine, minRating);
+
         return restaurants.stream()
-                .map(restaurantMapper::toDto)
+                .map(restaurant -> {
+                    BigDecimal currentRating = reviewRepository.calculateAverageRatingByRestaurantId(restaurant.getId());
+                    restaurant.setRating(currentRating);
+                    return restaurantMapper.toDto(restaurant);
+                })
                 .collect(Collectors.toList());
     }
 
@@ -40,6 +49,9 @@ public class RestaurantService {
     public RestaurantResponse getRestaurantById(Long id) {
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Restaurant with id %d not found", id)));
+
+        BigDecimal curRating = reviewRepository.calculateAverageRatingByRestaurantId(id);
+        restaurant.setRating(curRating);
         return restaurantMapper.toDto(restaurant);
     }
 
@@ -55,6 +67,7 @@ public class RestaurantService {
     public void closeRestaurant(Long id) {
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Restaurant with id %d not found", id)));
-        restaurantRepository.delete(restaurant);
+        restaurant.setActive(false);
+        restaurantRepository.save(restaurant);
     }
 }

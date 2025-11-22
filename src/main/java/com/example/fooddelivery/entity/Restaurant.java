@@ -12,6 +12,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -41,13 +42,25 @@ public class Restaurant {
 
     @DecimalMin("0.0")
     @DecimalMax("5.0")
-    private Double rating = 0.0;
+    private BigDecimal rating = BigDecimal.ZERO;
 
     @Column(name = "opening_time", nullable = false)
     private LocalTime openingTime;
 
     @Column(name = "closing_time", nullable = false)
     private LocalTime closingTime;
+
+    @Column(nullable = false)
+    private boolean active = true;
+
+    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Item> menu = new ArrayList<>();
+
+    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
+    private List<Cart> carts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "restaurant")
+    private List<Review> reviews = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -57,17 +70,12 @@ public class Restaurant {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Item> menu = new ArrayList<>();
-
-    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
-    private List<Cart> carts = new ArrayList<>();
-
-    public Restaurant(String name, Address address, CuisineType cuisineType, LocalTime openingTime, LocalTime closingTime) {
+    public Restaurant(String name, Address address, CuisineType cuisineType, LocalTime openingTime, LocalTime closingTime, boolean active) {
         this.name = name;
         this.address = address;
         this.cuisineType = cuisineType;
         this.openingTime = openingTime;
         this.closingTime = closingTime;
+        this.active = active;
     }
 }

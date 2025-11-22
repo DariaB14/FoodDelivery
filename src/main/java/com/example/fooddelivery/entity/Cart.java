@@ -1,6 +1,7 @@
 package com.example.fooddelivery.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,8 +30,15 @@ public class Cart {
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
+    @Min(0)
+    @Column(name = "eta")
+    private Integer eta;
+
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> items = new ArrayList<>();
+
+    @OneToOne(mappedBy = "cart", fetch = FetchType.LAZY)
+    private Order order;
 
     @CreationTimestamp
     @Column(name = "created_at")

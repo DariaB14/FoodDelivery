@@ -6,15 +6,16 @@ import java.util.List;
 public record ItemResponse(
         Long id,
         String name,
-        BigDecimal minPrice,
-        Integer minPreparationMinutes,
         boolean available,
         Long restaurantId,
         List<ItemOptionResponse> options
 ) {
-    public ItemResponse {
-        minPrice = calculateMinPrice(options);
-        minPreparationMinutes = calculatePreparationMinutes(options);
+    public BigDecimal getMinPrice() {
+        return calculateMinPrice(options);
+    }
+
+    public Integer getMinPreparationMinutes() {
+        return calculatePreparationMinutes(options);
     }
 
     private static BigDecimal calculateMinPrice(List<ItemOptionResponse> options){

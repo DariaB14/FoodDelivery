@@ -16,16 +16,22 @@ public interface UserMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "active", constant = "true")
     @Mapping(target = "cart", ignore = true)
+    @Mapping(target = "orders", ignore = true)
+    @Mapping(target = "reviews", ignore = true)
+    @Mapping(target = "notifications", ignore = true)
     User toEntity(UserRequest dto);
 
     UserResponse toDto(User user);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "password", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "active", ignore = true)
     @Mapping(target = "cart", ignore = true)
+    @Mapping(target = "orders", ignore = true)
+    @Mapping(target = "reviews", ignore = true)
+    @Mapping(target = "notifications", ignore = true)
+    @Mapping(target = "role", ignore = true)
     void update(UserRequest dto, @MappingTarget User user);
 
     Address toAddressEntity(AddressDto dto);

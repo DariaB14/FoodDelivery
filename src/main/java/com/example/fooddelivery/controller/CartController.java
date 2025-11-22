@@ -17,28 +17,38 @@ public class CartController {
 
     @PostMapping("/items")
     public ResponseEntity<CartResponse> addItem(@RequestBody @Valid CartItemRequest cartItemRequest){
-        return ResponseEntity.ok(cartService.addItem(cartItemRequest));
+        Long userId = getCurrentUserId();
+        return ResponseEntity.ok(cartService.addItem(userId, cartItemRequest));
     }
 
     @DeleteMapping("/items/{id}")
     public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
-        cartService.deleteItem(id);
+        Long userId = getCurrentUserId();
+        cartService.deleteItem(userId, id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/items/{id}")
     public ResponseEntity<CartResponse> updateQuantity(@PathVariable Long id, @RequestParam @Min(1) Integer quantity) {
-        return ResponseEntity.ok(cartService.updateQuantity(id, quantity));
+        Long userId = getCurrentUserId();
+        return ResponseEntity.ok(cartService.updateQuantity(userId, id, quantity));
     }
 
     @GetMapping
     public ResponseEntity<CartResponse> getCart() {
-        return ResponseEntity.ok(cartService.getCart());
+        Long userId = getCurrentUserId();
+        return ResponseEntity.ok(cartService.getCart(userId));
     }
 
     @DeleteMapping
     public ResponseEntity<Void> clearCart() {
-        cartService.clearCart();
+        Long userId = getCurrentUserId();
+        cartService.clearCart(userId);
         return ResponseEntity.noContent().build();
+    }
+
+    //заглушка для security
+    private Long getCurrentUserId() {
+        return 1L;
     }
 }

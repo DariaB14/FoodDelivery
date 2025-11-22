@@ -3,6 +3,7 @@ package com.example.fooddelivery.entity;
 import com.example.fooddelivery.enums.ItemSize;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,6 +30,7 @@ public class ItemOption {
     @Column(nullable = false)
     private BigDecimal price;
 
+    @Min(5)
     @Column(name="preparation_minutes", nullable = false)
     private Integer preparationMinutes;
 
@@ -38,4 +40,11 @@ public class ItemOption {
 
     @OneToMany(mappedBy = "itemOption", fetch = FetchType.LAZY)
     private List<CartItem> cartItems = new ArrayList<>();
+
+    public ItemOption(ItemSize size, BigDecimal price, Integer preparationMinutes, Item item) {
+        this.size = size;
+        this.price = price;
+        this.preparationMinutes = preparationMinutes;
+        this.item = item;
+    }
 }

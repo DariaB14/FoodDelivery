@@ -1,7 +1,7 @@
 package com.example.fooddelivery.entity;
 
 import jakarta.persistence.Embeddable;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,12 +10,19 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Address {
+    @NotBlank
     private String country;
+
+    @NotBlank
     private String city;
+
+    @NotBlank
     private String street;
+
+    @NotBlank
     private String houseNumber;
+
     private String apartmentNumber;
     private Integer floor;
 
@@ -23,6 +30,6 @@ public class Address {
         this.country = country;
         this.city = city;
         this.street = street;
-        this.houseNumber=houseNumber;
+        this.houseNumber = houseNumber;
     }
 }

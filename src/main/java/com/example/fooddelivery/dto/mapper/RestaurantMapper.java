@@ -13,6 +13,7 @@ import org.mapstruct.MappingTarget;
 public interface RestaurantMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "rating", ignore = true)
+    @Mapping(target = "active", constant = "true")
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "menu", ignore = true)
@@ -23,10 +24,12 @@ public interface RestaurantMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "rating", ignore = true)
+    @Mapping(target = "active", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "menu", ignore = true)
     @Mapping(target = "carts", ignore = true)
+    @Mapping(target = "reviews", ignore = true)
     void update(RestaurantRequest dto, @MappingTarget Restaurant restaurant);
 
     Address toAddressEntity(AddressDto dto);

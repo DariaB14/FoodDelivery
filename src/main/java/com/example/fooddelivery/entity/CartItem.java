@@ -1,7 +1,8 @@
 package com.example.fooddelivery.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,5 +30,7 @@ public class CartItem {
     private ItemOption itemOption;
 
     @Column(nullable = false)
+    @Min(1)
+    @Max(50)
     private Integer quantity = 1;
 }

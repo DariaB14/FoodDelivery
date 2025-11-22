@@ -3,6 +3,7 @@ package com.example.fooddelivery.dto.response;
 import com.example.fooddelivery.dto.AddressDto;
 import com.example.fooddelivery.enums.CuisineType;
 
+import java.math.BigDecimal;
 import java.time.LocalTime;
 
 public record RestaurantResponse(
@@ -10,8 +11,9 @@ public record RestaurantResponse(
         String name,
         AddressDto address,
         CuisineType cuisineType,
-        Double rating,
+        BigDecimal rating,
         LocalTime openingTime,
-        LocalTime closingTime
+        LocalTime closingTime,
+        boolean active
 ) {}
 
