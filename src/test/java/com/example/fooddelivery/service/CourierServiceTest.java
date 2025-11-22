@@ -24,8 +24,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -86,6 +85,8 @@ class CourierServiceTest {
         CourierResponse result = courierService.registerCourier(courierRequest);
 
         assertThat(result).isNotNull();
+        assertThat(result.id()).isEqualTo(COURIER_ID);
+        assertThat(result.name()).isEqualTo("Max");
 
         verify(courierRepository).save(newCourier);
     }
@@ -116,6 +117,10 @@ class CourierServiceTest {
         CourierResponse result = courierService.assignOrder(COURIER_ID, ORDER_ID);
 
         assertThat(result).isNotNull();
+        assertThat(order.getCourier()).isEqualTo(courier);
+        assertThat(order.getStatus()).isEqualTo(OrderStatus.TAKED);
+        assertThat(courier.getCurrentOrdersAmount()).isEqualTo(1);
+        assertThat(courier.getStatus()).isEqualTo(CourierStatus.FREE);
 
         verify(orderRepository).save(order);
         verify(courierRepository).save(courier);
@@ -246,6 +251,7 @@ class CourierServiceTest {
         CourierResponse result = courierService.updateStatus(COURIER_ID, CourierStatus.BUSY);
 
         assertThat(result).isNotNull();
+        assertThat(courier.getStatus()).isEqualTo(CourierStatus.BUSY);
 
         verify(courierRepository).save(courier);
     }
@@ -260,5 +266,4 @@ class CourierServiceTest {
 
         verify(courierRepository, never()).save(any());
     }
-
 }

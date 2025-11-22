@@ -23,8 +23,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -83,6 +82,7 @@ class ItemServiceTest {
 
         assertThat(result).isNotNull();
         assertThat(result.id()).isEqualTo(ITEM_ID);
+        assertThat(item.getRestaurant()).isEqualTo(restaurant);
 
         verify(itemRepository).save(item);
     }
@@ -102,6 +102,7 @@ class ItemServiceTest {
 
         assertThat(result).isNotNull();
         assertThat(result.options()).hasSize(1);
+        assertThat(result.options().get(0).size()).isEqualTo(ItemSize.LARGE);
 
         verify(itemRepository).save(item);
     }
@@ -170,6 +171,7 @@ class ItemServiceTest {
         ItemResponse result = itemService.updateItem(ITEM_ID, updateRequest);
 
         assertThat(result).isNotNull();
+        assertThat(item.getOptions()).hasSize(1);
 
         verify(itemRepository).save(item);
     }

@@ -51,6 +51,7 @@ public class ReviewController {
         return ResponseEntity.noContent().build();
     }
 
+    //заглушка для security
     private Long getCurrentUser(){
         return 1L;
     }

@@ -9,6 +9,7 @@ import com.example.fooddelivery.enums.NotificationChannel;
 import com.example.fooddelivery.enums.NotificationStatus;
 import com.example.fooddelivery.enums.NotificationType;
 import com.example.fooddelivery.exception.EntityNotFoundException;
+import com.example.fooddelivery.inner.NotificationSender;
 import com.example.fooddelivery.repository.NotificationRepository;
 import com.example.fooddelivery.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +37,9 @@ class NotificationServiceTest {
 
     @Mock
     private NotificationMapper notificationMapper;
+
+    @Mock
+    private NotificationSender notificationSender;
 
     @InjectMocks
     private NotificationService notificationService;
@@ -79,6 +83,8 @@ class NotificationServiceTest {
         NotificationResponse result = notificationService.createNotification(notificationRequest);
 
         assertThat(result).isNotNull();
+        assertThat(result.id()).isEqualTo(NOTIFICATION_ID);
+        assertThat(result.userId()).isEqualTo(USER_ID);
 
         verify(notificationRepository).save(notification);
     }
@@ -86,7 +92,7 @@ class NotificationServiceTest {
     @Test
     void createNotificationWhenUserNotFound() {
         when(userRepository.findById(NON_EXISTENT_USER_ID)).thenReturn(Optional.empty());
-        NotificationRequest request = new NotificationRequest(NON_EXISTENT_USER_ID, "Test",
+        NotificationRequest request = new NotificationRequest(NON_EXISTENT_USER_ID, "Заказ готов к выдаче",
                 NotificationType.ORDER_READY, NotificationChannel.PUSH, null);
 
         assertThatThrownBy(() -> notificationService.createNotification(request))
@@ -94,6 +100,24 @@ class NotificationServiceTest {
                 .hasMessage("User with id 999 not found");
 
         verify(notificationRepository, never()).save(any());
+    }
+
+    @Test
+    void createNotificationThenSendImmediately() throws Exception {
+        NotificationRequest request = new NotificationRequest(USER_ID, "Заказ готов к выдаче",
+                NotificationType.ORDER_READY, NotificationChannel.PUSH, null);
+
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+        when(notificationMapper.toEntity(request)).thenReturn(notification);
+        when(notificationRepository.save(notification)).thenReturn(notification);
+        when(notificationMapper.toDto(notification)).thenReturn(notificationResponse);
+
+        NotificationResponse result = notificationService.createNotification(request);
+
+        assertThat(result).isNotNull();
+
+        verify(notificationSender).send(notification);
+        verify(notificationRepository).save(notification);
     }
 
     @Test
@@ -129,6 +153,7 @@ class NotificationServiceTest {
         NotificationResponse result = notificationService.updateNotificationStatus(NOTIFICATION_ID, NotificationStatus.SENT);
 
         assertThat(result).isNotNull();
+        assertThat(notification.getStatus()).isEqualTo(NotificationStatus.SENT);
 
         verify(notificationRepository).save(notification);
     }

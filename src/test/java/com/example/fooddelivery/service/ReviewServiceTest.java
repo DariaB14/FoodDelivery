@@ -76,6 +76,9 @@ class ReviewServiceTest {
 
         assertThat(result).isNotNull();
         assertThat(result.id()).isEqualTo(REVIEW_ID);
+        assertThat(review.getUser().getId()).isEqualTo(USER_ID);
+        assertThat(review.getRestaurant().getId()).isEqualTo(RESTAURANT_ID);
+        assertThat(review.getOrder().getId()).isEqualTo(ORDER_ID);
 
         verify(reviewRepository).save(review);
     }
@@ -150,6 +153,7 @@ class ReviewServiceTest {
         ReviewResponse result = reviewService.createReview(request, USER_ID);
 
         assertThat(result.status()).isEqualTo(ReviewStatus.BANNED);
+        assertThat(review.getStatus()).isEqualTo(ReviewStatus.BANNED);
 
         verify(spamService).moderateReview(request, USER_ID, RESTAURANT_ID);
     }

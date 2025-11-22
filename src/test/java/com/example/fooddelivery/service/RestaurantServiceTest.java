@@ -86,6 +86,8 @@ class RestaurantServiceTest {
         RestaurantResponse result = restaurantService.createRestaurant(restaurantRequest);
 
         assertThat(result).isNotNull();
+        assertThat(result.id()).isEqualTo(RESTAURANT_ID);
+        assertThat(result.name()).isEqualTo("PizzaMania");
 
         verify(restaurantRepository).save(newRestaurant);
     }
@@ -128,6 +130,7 @@ class RestaurantServiceTest {
         List<RestaurantResponse> result = restaurantService.getRestaurants(cuisine, null);
 
         assertThat(result).hasSize(1);
+        assertThat(result.get(0).cuisineType()).isEqualTo(CuisineType.PIZZA);
 
         verify(restaurantRepository).findByCuisineAndRating(cuisine, null);
     }
@@ -176,6 +179,8 @@ class RestaurantServiceTest {
         RestaurantResponse result = restaurantService.updateRestaurant(RESTAURANT_ID, updateRequest);
 
         assertThat(result).isNotNull();
+        assertThat(result.name()).isEqualTo("PizzaMania New");
+        assertThat(result.cuisineType()).isEqualTo(CuisineType.ITALIAN);
 
         verify(restaurantMapper).update(updateRequest, restaurant);
         verify(restaurantRepository).save(restaurant);

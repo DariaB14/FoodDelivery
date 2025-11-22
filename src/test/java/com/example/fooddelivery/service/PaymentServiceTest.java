@@ -77,6 +77,9 @@ class PaymentServiceTest {
         PaymentResponse result = paymentService.createPayment(paymentRequest);
 
         assertThat(result).isNotNull();
+        assertThat(result.id()).isEqualTo(PAYMENT_ID);
+        assertThat(result.orderId()).isEqualTo(ORDER_ID);
+        assertThat(payment.getOrder()).isEqualTo(order);
 
         verify(paymentRepository).save(payment);
     }
@@ -151,6 +154,8 @@ class PaymentServiceTest {
         PaymentResponse result = paymentService.updateStatus(PAYMENT_ID, PaymentStatus.FAILED);
 
         assertThat(result).isNotNull();
+        assertThat(payment.getPaymentStatus()).isEqualTo(PaymentStatus.FAILED);
+        assertThat(order.getStatus()).isEqualTo(OrderStatus.CANCELLED);
 
         verify(orderRepository).save(order);
         verify(paymentRepository).save(payment);

@@ -100,6 +100,10 @@ class CartServiceTest {
 
     @Test
     void addItem_Success() {
+        restaurant.setActive(true);
+        restaurant.setOpeningTime(LocalTime.MIN);
+        restaurant.setClosingTime(LocalTime.MAX);
+
         when(cartRepository.findByUserId(USER_ID)).thenReturn(Optional.of(cart));
         when(itemOptionRepository.findById(ITEM_OPTION_ID)).thenReturn(Optional.of(itemOption));
         when(cartRepository.save(cart)).thenReturn(cart);
@@ -108,6 +112,8 @@ class CartServiceTest {
         CartResponse result = cartService.addItem(USER_ID, cartItemRequest);
 
         assertThat(result).isNotNull();
+        assertThat(result.items()).hasSize(1);
+        assertThat(result.items().get(0).quantity()).isEqualTo(3);
 
         verify(cartRepository).save(cart);
     }
@@ -156,7 +162,14 @@ class CartServiceTest {
     void addItemWhenDifferentRestaurant() {
         Restaurant differentRestaurant = new Restaurant();
         differentRestaurant.setId(2L);
+        differentRestaurant.setActive(true);
+        differentRestaurant.setOpeningTime(LocalTime.MIN);
+        differentRestaurant.setClosingTime(LocalTime.MAX);
         cart.setRestaurant(differentRestaurant);
+
+        restaurant.setActive(true);
+        restaurant.setOpeningTime(LocalTime.MIN);
+        restaurant.setClosingTime(LocalTime.MAX);
 
         when(cartRepository.findByUserId(USER_ID)).thenReturn(Optional.of(cart));
         when(itemOptionRepository.findById(ITEM_OPTION_ID)).thenReturn(Optional.of(itemOption));
@@ -208,6 +221,7 @@ class CartServiceTest {
         CartResponse result = cartService.updateQuantity(USER_ID, ITEM_ID, 5);
 
         assertThat(result).isNotNull();
+        assertThat(cartItem.getQuantity()).isEqualTo(5);
 
         verify(cartItemRepository).save(cartItem);
     }
@@ -258,6 +272,7 @@ class CartServiceTest {
         assertThat(cart.getRestaurant()).isNull();
 
         verify(cartRepository).save(cart);
+        assertThat(cart.getItems()).hasSize(0);
     }
 
     @Test

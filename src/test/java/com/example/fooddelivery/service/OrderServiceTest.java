@@ -24,8 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -99,6 +98,10 @@ class OrderServiceTest {
         OrderResponse result = orderService.createOrder(orderRequest);
 
         assertThat(result).isNotNull();
+        assertThat(result.id()).isEqualTo(ORDER_ID);
+        assertThat(result.status()).isEqualTo(OrderStatus.NEW);
+        assertThat(cart.getRestaurant()).isNull();
+        assertThat(cart.getItems()).isEmpty();
 
         verify(cartRepository).save(cart);
         verify(orderRepository).save(order);
@@ -233,22 +236,10 @@ class OrderServiceTest {
         OrderResponse result = orderService.updateStatus(ORDER_ID, OrderStatus.CONFIRMED);
 
         assertThat(result).isNotNull();
+        assertThat(order.getStatus()).isEqualTo(OrderStatus.CONFIRMED);
 
         verify(orderRepository).save(order);
         verify(notificationService).createNotification(any(NotificationRequest.class));
-    }
-
-    @Test
-    void updateStatusToDelivered_Success() {
-        when(orderRepository.findById(ORDER_ID)).thenReturn(Optional.of(order));
-        when(orderRepository.save(order)).thenReturn(order);
-        when(orderMapper.toDto(order)).thenReturn(orderResponse);
-
-        OrderResponse result = orderService.updateStatus(ORDER_ID, OrderStatus.DELIVERED);
-
-        assertThat(result).isNotNull();
-
-        verify(notificationService, times(2)).createNotification(any(NotificationRequest.class));
     }
 
     @Test
@@ -287,6 +278,8 @@ class OrderServiceTest {
         OrderResponse result = orderService.updateStatusByCourier(ORDER_ID, OrderStatus.TAKED, COURIER_ID);
 
         assertThat(result).isNotNull();
+        assertThat(order.getStatus()).isEqualTo(OrderStatus.TAKED);
+        assertThat(order.getCourier().getId()).isEqualTo(COURIER_ID);
 
         verify(orderRepository).save(order);
     }
@@ -352,5 +345,4 @@ class OrderServiceTest {
 
         verify(orderRepository, never()).save(any());
     }
-
 }

@@ -66,6 +66,8 @@ class UserServiceTest {
 
         assertThat(result).isNotNull();
         assertThat(result.id()).isEqualTo(USER_ID);
+        assertThat(result.username()).isEqualTo("Kate");
+        assertThat(user.isActive()).isTrue();
 
         verify(userRepository).save(user);
     }
@@ -128,7 +130,8 @@ class UserServiceTest {
         UserResponse result = userService.update(USER_ID, updateRequest);
 
         assertThat(result).isNotNull();
-
+        assertThat(result.email()).isEqualTo("kate_new@gmail.com");
+        assertThat(result.phone()).isEqualTo("+79971114455");
 
         verify(userMapper).update(updateRequest, user);
         verify(userRepository).save(user);
@@ -171,6 +174,7 @@ class UserServiceTest {
         userService.deactivate(USER_ID);
 
         assertThat(user.isActive()).isFalse();
+
         verify(userRepository).save(user);
     }
 
